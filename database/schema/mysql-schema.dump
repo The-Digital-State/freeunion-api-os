@@ -1,0 +1,644 @@
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+drop table if exists `activity_scope_organization`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+create table `activity_scope_organization`
+(
+    `activity_scope_id` bigint unsigned not null,
+    `organization_id`   bigint unsigned not null,
+    primary key (`activity_scope_id`, `organization_id`),
+    key                 `activity_scope_organization_organization_id_foreign` (`organization_id`),
+    constraint `activity_scope_organization_activity_scope_id_foreign` foreign key (`activity_scope_id`) references `activity_scopes` (`id`) on delete cascade,
+    constraint `activity_scope_organization_organization_id_foreign` foreign key (`organization_id`) references `organizations` (`id`) on delete cascade
+) ENGINE=InnoDB default CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `activity_scopes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+create table `activity_scopes`
+(
+    `id`   bigint unsigned not null AUTO_INCREMENT,
+    `name` varchar(255) character set utf8mb4 collate utf8mb4_unicode_ci not null,
+    primary key (`id`)
+) ENGINE=InnoDB default CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `banners`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+create table `banners`
+(
+    `id`              bigint unsigned not null AUTO_INCREMENT,
+    `organization_id` bigint unsigned default null,
+    `large`           varchar(255) collate utf8mb4_unicode_ci default null,
+    `small`           varchar(255) collate utf8mb4_unicode_ci default null,
+    `index`           tinyint not null                        default '1',
+    `created_at`      timestamp null default null,
+    `updated_at`      timestamp null default null,
+    primary key (`id`),
+    key               `banners_organization_id_foreign` (`organization_id`),
+    constraint `banners_organization_id_foreign` foreign key (`organization_id`) references `organizations` (`id`) on delete cascade
+) ENGINE=InnoDB default CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `desk_comments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+create table `desk_comments`
+(
+    `id`           bigint unsigned not null AUTO_INCREMENT,
+    `desk_task_id` bigint unsigned not null,
+    `user_id`      bigint unsigned not null,
+    `comment`      text collate utf8mb4_unicode_ci,
+    `created_at`   timestamp null default null,
+    `updated_at`   timestamp null default null,
+    primary key (`id`),
+    key            `desk_comments_desk_task_id_foreign` (`desk_task_id`),
+    key            `desk_comments_user_id_foreign` (`user_id`),
+    constraint `desk_comments_desk_task_id_foreign` foreign key (`desk_task_id`) references `desk_tasks` (`id`) on delete cascade,
+    constraint `desk_comments_user_id_foreign` foreign key (`user_id`) references `users` (`id`) on delete cascade
+) ENGINE=InnoDB default CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `desk_images`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+create table `desk_images`
+(
+    `id`           bigint unsigned not null AUTO_INCREMENT,
+    `desk_task_id` bigint unsigned not null,
+    `user_id`      bigint unsigned not null,
+    `image`        varchar(255) collate utf8mb4_unicode_ci default null,
+    `created_at`   timestamp null default null,
+    primary key (`id`),
+    key            `desk_images_desk_task_id_foreign` (`desk_task_id`),
+    key            `desk_images_user_id_foreign` (`user_id`),
+    constraint `desk_images_desk_task_id_foreign` foreign key (`desk_task_id`) references `desk_tasks` (`id`),
+    constraint `desk_images_user_id_foreign` foreign key (`user_id`) references `users` (`id`) on delete cascade
+) ENGINE=InnoDB default CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `desk_tasks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+create table `desk_tasks`
+(
+    `id`              bigint unsigned not null AUTO_INCREMENT,
+    `organization_id` bigint unsigned not null,
+    `user_id`         bigint unsigned not null,
+    `column_id`       tinyint unsigned not null default '0',
+    `title`           varchar(255) collate utf8mb4_unicode_ci not null,
+    `description`     text collate utf8mb4_unicode_ci,
+    `checklist`       text collate utf8mb4_unicode_ci,
+    `visibility`      tinyint unsigned not null default '0',
+    `created_at`      timestamp null default null,
+    `updated_at`      timestamp null default null,
+    primary key (`id`),
+    key               `desk_tasks_organization_id_foreign` (`organization_id`),
+    key               `desk_tasks_user_id_foreign` (`user_id`),
+    constraint `desk_tasks_organization_id_foreign` foreign key (`organization_id`) references `organizations` (`id`) on delete cascade,
+    constraint `desk_tasks_user_id_foreign` foreign key (`user_id`) references `users` (`id`) on delete cascade
+) ENGINE=InnoDB default CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `doc_templates`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+create table `doc_templates`
+(
+    `id`              bigint unsigned not null AUTO_INCREMENT,
+    `name`            varchar(255) collate utf8mb4_unicode_ci default null,
+    `organization_id` bigint unsigned default null,
+    `template`        varchar(255) collate utf8mb4_unicode_ci not null,
+    `fields`          text collate utf8mb4_unicode_ci,
+    `previews`        text collate utf8mb4_unicode_ci,
+    `created_at`      timestamp null default null,
+    `updated_at`      timestamp null default null,
+    `deleted_at`      timestamp null default null,
+    primary key (`id`),
+    key               `doc_templates_organization_id_foreign` (`organization_id`),
+    constraint `doc_templates_organization_id_foreign` foreign key (`organization_id`) references `organizations` (`id`) on delete cascade
+) ENGINE=InnoDB default CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `enter_requests`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+create table `enter_requests`
+(
+    `id`              bigint unsigned not null AUTO_INCREMENT,
+    `user_id`         bigint unsigned not null,
+    `organization_id` bigint unsigned not null,
+    `comment`         text character set utf8mb4 collate utf8mb4_unicode_ci,
+    `status`          tinyint not null default '0',
+    `created_at`      timestamp null default null,
+    `updated_at`      timestamp null default null,
+    primary key (`id`),
+    key               `enter_requests_organization_id_foreign` (`organization_id`),
+    key               `enter_requests_user_id_organization_id_index` (`user_id`,`organization_id`),
+    constraint `enter_requests_organization_id_foreign` foreign key (`organization_id`) references `organizations` (`id`) on delete cascade,
+    constraint `enter_requests_user_id_foreign` foreign key (`user_id`) references `users` (`id`) on delete cascade
+) ENGINE=InnoDB default CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `help_offer_links`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+create table `help_offer_links`
+(
+    `id`              bigint unsigned not null AUTO_INCREMENT,
+    `organization_id` bigint unsigned not null,
+    `user_id`         bigint unsigned not null,
+    `help_offer_id`   bigint unsigned not null,
+    primary key (`id`),
+    key               `help_offer_links_organization_id_foreign` (`organization_id`),
+    key               `help_offer_links_user_id_foreign` (`user_id`),
+    key               `help_offer_links_help_offer_id_foreign` (`help_offer_id`),
+    constraint `help_offer_links_help_offer_id_foreign` foreign key (`help_offer_id`) references `help_offers` (`id`) on delete cascade,
+    constraint `help_offer_links_organization_id_foreign` foreign key (`organization_id`) references `organizations` (`id`) on delete cascade,
+    constraint `help_offer_links_user_id_foreign` foreign key (`user_id`) references `users` (`id`) on delete cascade
+) ENGINE=InnoDB default CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `help_offers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+create table `help_offers`
+(
+    `id`   bigint unsigned not null AUTO_INCREMENT,
+    `text` varchar(255) character set utf8mb4 collate utf8mb4_unicode_ci not null,
+    primary key (`id`)
+) ENGINE=InnoDB default CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `interest_scope_organization`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+create table `interest_scope_organization`
+(
+    `interest_scope_id` bigint unsigned not null,
+    `organization_id`   bigint unsigned not null,
+    primary key (`interest_scope_id`, `organization_id`),
+    key                 `interest_scope_organization_organization_id_foreign` (`organization_id`),
+    constraint `interest_scope_organization_interest_scope_id_foreign` foreign key (`interest_scope_id`) references `interest_scopes` (`id`) on delete cascade,
+    constraint `interest_scope_organization_organization_id_foreign` foreign key (`organization_id`) references `organizations` (`id`) on delete cascade
+) ENGINE=InnoDB default CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `interest_scopes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+create table `interest_scopes`
+(
+    `id`   bigint unsigned not null AUTO_INCREMENT,
+    `name` varchar(255) character set utf8mb4 collate utf8mb4_unicode_ci not null,
+    primary key (`id`)
+) ENGINE=InnoDB default CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `invite_links`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+create table `invite_links`
+(
+    `id`         bigint unsigned not null AUTO_INCREMENT,
+    `user_id`    bigint unsigned not null,
+    `code`       varchar(64) character set utf8mb4 collate utf8mb4_unicode_ci not null,
+    `invites`    int default null,
+    `limit`      timestamp null default null,
+    `created_at` timestamp null default null,
+    `updated_at` timestamp null default null,
+    primary key (`id`),
+    key          `invite_links_user_id_foreign` (`user_id`),
+    constraint `invite_links_user_id_foreign` foreign key (`user_id`) references `users` (`id`) on delete cascade
+) ENGINE=InnoDB default CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `member_list_user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+create table `member_list_user`
+(
+    `member_list_id` bigint unsigned not null,
+    `user_id`        bigint unsigned not null,
+    primary key (`member_list_id`, `user_id`),
+    key              `member_list_user_user_id_foreign` (`user_id`),
+    constraint `member_list_user_member_list_id_foreign` foreign key (`member_list_id`) references `member_lists` (`id`) on delete cascade,
+    constraint `member_list_user_user_id_foreign` foreign key (`user_id`) references `users` (`id`) on delete cascade
+) ENGINE=InnoDB default CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `member_lists`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+create table `member_lists`
+(
+    `id`              bigint unsigned not null AUTO_INCREMENT,
+    `organization_id` bigint unsigned not null,
+    `name`            varchar(255) character set utf8mb4 collate utf8mb4_unicode_ci not null,
+    `filter`          longtext character set utf8mb4 collate utf8mb4_unicode_ci,
+    `created_at`      timestamp null default null,
+    `updated_at`      timestamp null default null,
+    primary key (`id`),
+    key               `member_lists_organization_id_foreign` (`organization_id`),
+    constraint `member_lists_organization_id_foreign` foreign key (`organization_id`) references `organizations` (`id`) on delete cascade
+) ENGINE=InnoDB default CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `membership`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+create table `membership`
+(
+    `user_id`         bigint unsigned not null,
+    `organization_id` bigint unsigned not null,
+    `position_id`     bigint unsigned default null,
+    `position_name`   varchar(255) collate utf8mb4_unicode_ci default null,
+    `description`     text collate utf8mb4_unicode_ci,
+    `permissions`     bigint unsigned not null default '0',
+    `comment`         text character set utf8mb4 collate utf8mb4_unicode_ci,
+    `points`          int unsigned not null default '0',
+    `joined_at`       timestamp not null                      default current_timestamp,
+    primary key (`user_id`, `organization_id`),
+    key               `membership_organization_id_foreign` (`organization_id`),
+    key               `membership_position_id_foreign` (`position_id`),
+    constraint `membership_organization_id_foreign` foreign key (`organization_id`) references `organizations` (`id`) on delete cascade,
+    constraint `membership_position_id_foreign` foreign key (`position_id`) references `positions` (`id`) on delete cascade,
+    constraint `membership_user_id_foreign` foreign key (`user_id`) references `users` (`id`) on delete cascade
+) ENGINE=InnoDB default CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `mfas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+create table `mfas`
+(
+    `id`            bigint unsigned not null AUTO_INCREMENT,
+    `user_id`       bigint unsigned not null,
+    `enabled`       varchar(255) collate utf8mb4_unicode_ci not null,
+    `otp_passwords` text collate utf8mb4_unicode_ci,
+    `totp_secret`   text collate utf8mb4_unicode_ci,
+    `created_at`    timestamp null default null,
+    `updated_at`    timestamp null default null,
+    primary key (`id`),
+    key             `mfas_user_id_foreign` (`user_id`),
+    constraint `mfas_user_id_foreign` foreign key (`user_id`) references `users` (`id`) on delete cascade
+) ENGINE=InnoDB default CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `migrations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+create table `migrations`
+(
+    `id`        int unsigned not null AUTO_INCREMENT,
+    `migration` varchar(255) character set utf8mb4 collate utf8mb4_unicode_ci not null,
+    `batch`     int                                                           not null,
+    primary key (`id`)
+) ENGINE=InnoDB default CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `notifications`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+create table `notifications`
+(
+    `id`         bigint unsigned not null AUTO_INCREMENT,
+    `from_type`  tinyint unsigned not null default '0',
+    `from_id`    bigint unsigned default null,
+    `to_id`      bigint unsigned not null,
+    `type`       varchar(255) collate utf8mb4_unicode_ci not null default '',
+    `title`      text collate utf8mb4_unicode_ci,
+    `message`    text collate utf8mb4_unicode_ci,
+    `status`     tinyint(1) not null default '0',
+    `created_at` timestamp null default null,
+    primary key (`id`),
+    key          `notifications_to_id_foreign` (`to_id`),
+    constraint `notifications_to_id_foreign` foreign key (`to_id`) references `users` (`id`) on delete cascade
+) ENGINE=InnoDB default CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `organization_hierarchy`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+create table `organization_hierarchy`
+(
+    `parent_id` bigint unsigned not null,
+    `child_id`  bigint unsigned not null,
+    primary key (`parent_id`, `child_id`),
+    key         `organization_hierarchy_child_id_foreign` (`child_id`),
+    constraint `organization_hierarchy_child_id_foreign` foreign key (`child_id`) references `organizations` (`id`) on delete cascade,
+    constraint `organization_hierarchy_parent_id_foreign` foreign key (`parent_id`) references `organizations` (`id`) on delete cascade
+) ENGINE=InnoDB default CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `organization_types`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+create table `organization_types`
+(
+    `id`   bigint unsigned not null AUTO_INCREMENT,
+    `name` varchar(255) character set utf8mb4 collate utf8mb4_unicode_ci not null,
+    primary key (`id`)
+) ENGINE=InnoDB default CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `organizations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+create table `organizations`
+(
+    `id`            bigint unsigned not null AUTO_INCREMENT,
+    `user_id`       bigint unsigned default null,
+    `type_id`       bigint unsigned default null,
+    `type_name`     varchar(255) collate utf8mb4_unicode_ci                                default null,
+    `request_type`  int                                                           not null default '0',
+    `name`          text character set utf8mb4 collate utf8mb4_unicode_ci not null,
+    `short_name`    varchar(255) character set utf8mb4 collate utf8mb4_unicode_ci not null,
+    `avatar`        varchar(255) character set utf8mb4 collate utf8mb4_unicode_ci          default null,
+    `description`   text character set utf8mb4 collate utf8mb4_unicode_ci not null,
+    `site`          varchar(255) collate utf8mb4_unicode_ci                                default null,
+    `email`         varchar(255) collate utf8mb4_unicode_ci                                default null,
+    `address`       varchar(255) collate utf8mb4_unicode_ci                                default null,
+    `phone`         varchar(255) collate utf8mb4_unicode_ci                                default null,
+    `status`        varchar(255) character set utf8mb4 collate utf8mb4_unicode_ci          default null,
+    `registration`  tinyint                                                       not null default '0',
+    `public_status` tinyint                                                       not null default '0',
+    `hiddens`       text collate utf8mb4_unicode_ci,
+    `created_at`    timestamp null default null,
+    `updated_at`    timestamp null default null,
+    `deleted_at`    timestamp null default null,
+    primary key (`id`),
+    key             `organizations_user_id_foreign` (`user_id`),
+    key             `organizations_type_id_foreign` (`type_id`),
+    constraint `organizations_type_id_foreign` foreign key (`type_id`) references `organization_types` (`id`) on delete cascade,
+    constraint `organizations_user_id_foreign` foreign key (`user_id`) references `users` (`id`) on delete set null
+) ENGINE=InnoDB default CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `password_resets`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+create table `password_resets`
+(
+    `id`         bigint unsigned not null AUTO_INCREMENT,
+    `email`      varchar(255) character set utf8mb4 collate utf8mb4_unicode_ci not null,
+    `token`      varchar(255) character set utf8mb4 collate utf8mb4_unicode_ci not null,
+    `created_at` timestamp null default null,
+    primary key (`id`),
+    key          `password_resets_email_index` (`email`)
+) ENGINE=InnoDB default CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `personal_access_tokens`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+create table `personal_access_tokens`
+(
+    `id`             bigint unsigned not null AUTO_INCREMENT,
+    `tokenable_type` varchar(255) character set utf8mb4 collate utf8mb4_unicode_ci not null,
+    `tokenable_id`   bigint unsigned not null,
+    `name`           varchar(255) character set utf8mb4 collate utf8mb4_unicode_ci not null,
+    `token`          varchar(64) character set utf8mb4 collate utf8mb4_unicode_ci  not null,
+    `abilities`      text character set utf8mb4 collate utf8mb4_unicode_ci,
+    `last_used_at`   timestamp null default null,
+    `created_at`     timestamp null default null,
+    `updated_at`     timestamp null default null,
+    primary key (`id`),
+    unique key `personal_access_tokens_token_unique` (`token`),
+    key              `personal_access_tokens_tokenable_type_tokenable_id_index` (`tokenable_type`,`tokenable_id`)
+) ENGINE=InnoDB default CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `positions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+create table `positions`
+(
+    `id`   bigint unsigned not null AUTO_INCREMENT,
+    `name` varchar(255) collate utf8mb4_unicode_ci not null,
+    primary key (`id`)
+) ENGINE=InnoDB default CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `suggestion_user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+create table `suggestion_user`
+(
+    `suggestion_id` bigint unsigned not null,
+    `user_id`       bigint unsigned not null,
+    primary key (`suggestion_id`, `user_id`),
+    key             `suggestion_user_user_id_foreign` (`user_id`),
+    constraint `suggestion_user_suggestion_id_foreign` foreign key (`suggestion_id`) references `suggestions` (`id`) on delete cascade,
+    constraint `suggestion_user_user_id_foreign` foreign key (`user_id`) references `users` (`id`) on delete cascade
+) ENGINE=InnoDB default CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `suggestions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+create table `suggestions`
+(
+    `id`               bigint unsigned not null AUTO_INCREMENT,
+    `organization_id`  bigint unsigned not null,
+    `user_id`          bigint unsigned default null,
+    `title`            varchar(255) character set utf8mb4 collate utf8mb4_unicode_ci not null,
+    `description`      text character set utf8mb4 collate utf8mb4_unicode_ci,
+    `solution`         text collate utf8mb4_unicode_ci,
+    `goal`             text collate utf8mb4_unicode_ci,
+    `urgency`          text collate utf8mb4_unicode_ci,
+    `budget`           text collate utf8mb4_unicode_ci,
+    `legal_aid`        text collate utf8mb4_unicode_ci,
+    `rights_violation` text collate utf8mb4_unicode_ci,
+    `created_at`       timestamp null default null,
+    `updated_at`       timestamp null default null,
+    primary key (`id`),
+    key                `suggestions_organization_id_foreign` (`organization_id`),
+    key                `suggestions_user_id_foreign` (`user_id`),
+    constraint `suggestions_organization_id_foreign` foreign key (`organization_id`) references `organizations` (`id`) on delete cascade,
+    constraint `suggestions_user_id_foreign` foreign key (`user_id`) references `users` (`id`) on delete set null
+) ENGINE=InnoDB default CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `user_infos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+create table `user_infos`
+(
+    `user_id`       bigint unsigned not null,
+    `family`        varchar(255) character set utf8mb4 collate utf8mb4_unicode_ci default null,
+    `name`          varchar(255) character set utf8mb4 collate utf8mb4_unicode_ci default null,
+    `patronymic`    varchar(255) character set utf8mb4 collate utf8mb4_unicode_ci default null,
+    `sex`           tinyint unsigned default null,
+    `birthday`      date                                                          default null,
+    `country`       varchar(2) collate utf8mb4_unicode_ci                         default null,
+    `worktype`      int                                                           default null,
+    `scope`         bigint unsigned default null,
+    `work_place`    varchar(255) collate utf8mb4_unicode_ci                       default null,
+    `work_position` varchar(255) character set utf8mb4 collate utf8mb4_unicode_ci default null,
+    `address`       varchar(255) character set utf8mb4 collate utf8mb4_unicode_ci default null,
+    `phone`         varchar(16) character set utf8mb4 collate utf8mb4_unicode_ci  default null,
+    `about`         text character set utf8mb4 collate utf8mb4_unicode_ci,
+    primary key (`user_id`),
+    key             `user_infos_scope_foreign` (`scope`),
+    constraint `user_infos_scope_foreign` foreign key (`scope`) references `activity_scopes` (`id`) on delete set null,
+    constraint `user_infos_user_id_foreign` foreign key (`user_id`) references `users` (`id`) on delete cascade
+) ENGINE=InnoDB default CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `user_secures`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+create table `user_secures`
+(
+    `user_id` bigint unsigned not null,
+    `data`    longtext character set utf8mb4 collate utf8mb4_unicode_ci,
+    primary key (`user_id`),
+    constraint `user_secures_user_id_foreign` foreign key (`user_id`) references `users` (`id`) on delete cascade
+) ENGINE=InnoDB default CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+create table `users`
+(
+    `id`                bigint unsigned not null AUTO_INCREMENT,
+    `referal_id`        bigint unsigned default null,
+    `login`             varchar(255) character set utf8mb4 collate utf8mb4_unicode_ci not null,
+    `email`             varchar(255) character set utf8mb4 collate utf8mb4_unicode_ci not null,
+    `email_verified_at` timestamp null default null,
+    `password`          varchar(255) character set utf8mb4 collate utf8mb4_unicode_ci not null,
+    `remember_token`    varchar(100) character set utf8mb4 collate utf8mb4_unicode_ci          default null,
+    `is_admin`          tinyint(1) not null default '0',
+    `is_public`         tinyint(1) not null default '0',
+    `change_public`     tinyint                                                       not null default '1',
+    `public_family`     varchar(32) character set utf8mb4 collate utf8mb4_unicode_ci           default null,
+    `public_name`       varchar(32) character set utf8mb4 collate utf8mb4_unicode_ci           default null,
+    `public_avatar`     varchar(255) character set utf8mb4 collate utf8mb4_unicode_ci          default null,
+    `hiddens`           text character set utf8mb4 collate utf8mb4_unicode_ci,
+    `settings`          text character set utf8mb4 collate utf8mb4_unicode_ci,
+    `created_at`        timestamp null default null,
+    `updated_at`        timestamp null default null,
+    primary key (`id`),
+    unique key `users_email_unique` (`email`),
+    unique key `users_public_family_public_name_unique` (`public_family`,`public_name`),
+    key                 `users_referal_id_foreign` (`referal_id`),
+    constraint `users_referal_id_foreign` foreign key (`referal_id`) references `users` (`id`) on delete cascade
+) ENGINE=InnoDB default CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+insert into `migrations`
+values (1, '2014_10_12_000000_create_users_table', 1);
+insert into `migrations`
+values (2, '2014_10_12_100000_create_password_resets_table', 1);
+insert into `migrations`
+values (3, '2019_12_14_000001_create_personal_access_tokens_table', 1);
+insert into `migrations`
+values (4, '2021_05_16_201231_add_public_fields_to_users', 1);
+insert into `migrations`
+values (5, '2021_05_16_202309_create_user_secures_table', 1);
+insert into `migrations`
+values (6, '2021_05_16_213352_create_organizations_table', 1);
+insert into `migrations`
+values (7, '2021_05_16_213802_create_organization_hierarchy', 1);
+insert into `migrations`
+values (8, '2021_05_17_085207_create_activity_scopes_table', 1);
+insert into `migrations`
+values (9, '2021_05_17_091125_add_fields_to_users', 1);
+insert into `migrations`
+values (10, '2021_05_19_014754_add_sex_and_split_public_name_in_users', 1);
+insert into `migrations`
+values (11, '2021_05_20_024457_add_nullable_to_public_to_users', 1);
+insert into `migrations`
+values (12, '2021_05_23_102547_create_invite_links_table', 1);
+insert into `migrations`
+values (13, '2021_05_23_104523_add_referal_to_users', 1);
+insert into `migrations`
+values (14, '2021_05_28_104003_create_help_offers_table', 1);
+insert into `migrations`
+values (15, '2021_05_29_094045_create_organization_types_table', 1);
+insert into `migrations`
+values (16, '2021_05_29_094919_change_fields_in_organizations', 1);
+insert into `migrations`
+values (17, '2021_05_29_100300_create_activity_scope_organization_table', 1);
+insert into `migrations`
+values (18, '2021_05_29_101041_create_membership_table', 1);
+insert into `migrations`
+values (19, '2021_05_29_101214_add_owner_field_to_organizations', 1);
+insert into `migrations`
+values (20, '2021_05_29_110951_create_member_lists_table', 1);
+insert into `migrations`
+values (21, '2021_05_29_111508_create_member_list_user_table', 1);
+insert into `migrations`
+values (22, '2021_05_29_195817_create_user_infos_table', 1);
+insert into `migrations`
+values (23, '2021_05_29_200757_remove_fields_from_users', 1);
+insert into `migrations`
+values (24, '2021_05_29_211059_add_admin_field_to_users', 1);
+insert into `migrations`
+values (25, '2021_05_29_211445_add_is_public_field_to_users', 1);
+insert into `migrations`
+values (26, '2021_05_31_001510_add_field_for_hidden_to_users', 1);
+insert into `migrations`
+values (27, '2021_05_31_133955_add_permissions_to_membership', 1);
+insert into `migrations`
+values (28, '2021_06_01_014850_change_position_in_membership', 1);
+insert into `migrations`
+values (29, '2021_06_03_211226_create_suggestions_table', 1);
+insert into `migrations`
+values (30, '2021_06_03_214549_create_suggestion_user_table', 1);
+insert into `migrations`
+values (31, '2021_06_07_150759_add_filter_to_member_lists', 1);
+insert into `migrations`
+values (32, '2021_06_10_234532_add_comment_to_membership', 1);
+insert into `migrations`
+values (33, '2021_06_16_095006_add_request_type_to_organizations', 1);
+insert into `migrations`
+values (34, '2021_06_16_100427_create_enter_requests_table', 1);
+insert into `migrations`
+values (35, '2021_06_16_124103_add_joined_at_to_membership', 1);
+insert into `migrations`
+values (36, '2021_06_18_211635_add_timestamp_to_member_lists', 1);
+insert into `migrations`
+values (37, '2021_07_01_180758_add_status_to_organizations', 1);
+insert into `migrations`
+values (38, '2021_07_10_155619_add_settings_to_users', 1);
+insert into `migrations`
+values (39, '2021_07_12_104843_create_interest_scopes_table', 1);
+insert into `migrations`
+values (40, '2021_07_12_105054_create_interest_scope_organization_table', 1);
+insert into `migrations`
+values (41, '2021_07_17_101154_add_points_to_membership', 1);
+insert into `migrations`
+values (42, '2021_07_18_162102_add_type_name_to_organizations', 2);
+insert into `migrations`
+values (43, '2021_07_20_164418_add_status_to_enter_requests', 2);
+insert into `migrations`
+values (44, '2021_07_20_175412_add_fields_to_organizations', 2);
+insert into `migrations`
+values (45, '2021_07_20_192944_create_positions_table', 2);
+insert into `migrations`
+values (46, '2021_07_20_193609_refactor_position_fields_to_membership', 2);
+insert into `migrations`
+values (47, '2021_07_20_212936_create_help_offer_links_table', 2);
+insert into `migrations`
+values (48, '2021_07_25_195328_create_doc_templates_table', 2);
+insert into `migrations`
+values (49, '2021_07_28_104220_add_previews_to_doc_templates', 2);
+insert into `migrations`
+values (50, '2021_07_29_123939_create_banners_table', 2);
+insert into `migrations`
+values (51, '2021_08_11_015417_add_change_public_to_users', 2);
+insert into `migrations`
+values (52, '2021_08_13_094138_add_visibility_to_organizations', 2);
+insert into `migrations`
+values (53, '2021_08_16_093829_create_notifications_table', 2);
+insert into `migrations`
+values (54, '2021_08_18_105818_add_partially_public_to_organizations', 2);
+insert into `migrations`
+values (55, '2021_08_18_115931_fix_partially_public_to_organizations', 2);
+insert into `migrations`
+values (56, '2021_08_25_104431_add_fields_to_suggestions', 2);
+insert into `migrations`
+values (57, '2021_09_09_210934_remove_response_from_enter_requests', 2);
+insert into `migrations`
+values (58, '2021_09_23_085937_create_mfas_table', 2);
+insert into `migrations`
+values (59, '2021_10_12_173531_add_type_to_notifications', 2);
+insert into `migrations`
+values (60, '2021_10_22_220237_add_description_to_membership', 2);
+insert into `migrations`
+values (61, '2021_11_03_152429_add_nullable_for_user_infos', 3);
+insert into `migrations`
+values (62, '2021_11_05_093850_create_desk_tasks_table', 4);
+insert into `migrations`
+values (63, '2021_11_05_095522_create_desk_comments_table', 4);
+insert into `migrations`
+values (64, '2021_11_05_095655_create_desk_images_table', 4);
+insert into `migrations`
+values (65, '2021_11_05_164309_add_soft_deletes_to_organizations', 5);
